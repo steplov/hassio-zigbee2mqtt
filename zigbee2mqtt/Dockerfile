@@ -7,7 +7,7 @@ ENV LANG C.UTF-8
 ENV ZIGBEE2MQTT_VERSION=1.7.1
 ENV ARCHIVE=zigbee2mqtt-$ZIGBEE2MQTT_VERSION
 
-RUN apk add --update --no-cache curl jq nodejs npm socat \
+RUN apk add --update --no-cache curl jq nodejs npm \
     python2 make gcc g++ linux-headers udev git python2 && \
   curl -sL -o "/$ARCHIVE.tar.gz" \
   "https://github.com/Koenkk/zigbee2mqtt/archive/$ZIGBEE2MQTT_VERSION.tar.gz" && \
@@ -19,9 +19,7 @@ RUN apk add --update --no-cache curl jq nodejs npm socat \
   rm -rf docs test images scripts data docker LICENSE README.md update.sh
 
 COPY run.sh "/$ARCHIVE/run.sh"
-COPY socat.sh "/$ARCHIVE/socat.sh"
 WORKDIR "/$ARCHIVE"
 
-RUN ["chmod", "a+x", "./socat.sh"]
 RUN ["chmod", "a+x", "./run.sh"]
 CMD [ "./run.sh" ]

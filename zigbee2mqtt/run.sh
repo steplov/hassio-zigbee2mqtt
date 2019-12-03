@@ -18,7 +18,7 @@ if [[ -f $DATA_PATH/configuration.yaml ]]; then
 fi
 
 # Parse config
-cat "$CONFIG_PATH" | jq 'del(.data_path)' | jq 'del(.zigbee_shepherd_debug)' | jq 'del(.zigbee_shepherd_devices)' | jq 'del(.socat)' > $DATA_PATH/configuration.yaml
+cat "$CONFIG_PATH" | jq 'del(.data_path)' | jq 'del(.zigbee_shepherd_debug)' | jq 'del(.zigbee_shepherd_devices)' > $DATA_PATH/configuration.yaml
 
 if [[ ! -z "$ZIGBEE_SHEPHERD_DEBUG" ]]; then
     echo "[Info] Zigbee Shepherd debug logging enabled."
@@ -26,17 +26,13 @@ if [[ ! -z "$ZIGBEE_SHEPHERD_DEBUG" ]]; then
 fi
 
 if [[ ! -z "$ZIGBEE_SHEPHERD_DEVICES" ]]; then
-    echo "[Info] Searching for custom devices file in zigbee2mqtt data path..." 
+    echo "[Info] Searching for custom devices file in zigbee2mqtt data path..."
     if [[ -f "$DATA_PATH"/devices.js ]]; then
         cp -f "$DATA_PATH"/devices.js ./node_modules/zigbee-herdsman-converters/devices.js
     else
         echo "[Error] File $DATA_PATH/devices.js not found! Starting with default devices.js"
     fi
 fi
-
-# FORK SOCAT IN A SEPARATE PROCESS IF ENABLED
-SOCAT_EXEC="$(dirname $0)/socat.sh"
-$SOCAT_EXEC $CONFIG_PATH
 
 # RUN zigbee2mqtt
 ZIGBEE2MQTT_DATA="$DATA_PATH" pm2-runtime start npm -- start
